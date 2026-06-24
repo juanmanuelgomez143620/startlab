@@ -49,6 +49,7 @@ export default function PageAdminClases() {
       if (data) {
         setClases(data.map(c => ({
           ...c,
+          curso: c.descripcion || '',
           alumnos_count: c.clase_estudiantes?.[0]?.count || 0
         })))
       }
@@ -91,7 +92,7 @@ export default function PageAdminClases() {
         .update({
           nombre,
           escuela,
-          curso,
+          descripcion: curso,
           materia,
           ciclo_lectivo: ciclo
         })
@@ -118,7 +119,7 @@ export default function PageAdminClases() {
       .insert({
         nombre,
         escuela,
-        curso,
+        descripcion: curso,
         materia,
         ciclo_lectivo: ciclo,
         profesor_id: user.id,
@@ -126,10 +127,10 @@ export default function PageAdminClases() {
       })
       .select()
       .single()
-    
+
     if (error) alert(error.message)
     else {
-      setClases([...clases, data])
+      setClases([...clases, { ...data, curso, alumnos_count: 0 }])
       setNombre('')
       setEscuela('')
       setCurso('')
