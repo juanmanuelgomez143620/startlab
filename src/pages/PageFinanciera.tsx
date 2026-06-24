@@ -5,7 +5,7 @@ import {
   LineElement, PointElement, Title, Tooltip, Legend, Filler
 } from 'chart.js'
 import { useStore } from '../store/useStore'
-import { calcFinanciero, calcTotalGastosFijos, fmt, n } from '../lib/calculos'
+import { calcFinanciero, calcTotalGastosFijos, fmt, n, round2 } from '../lib/calculos'
 import { FeedbackPanel } from '../components/FeedbackPanel'
 import { Card, CardTitle, CardSubtitle, IconBtn, Divider } from '../components/ui'
 import type { GastoFijo, ManoObra, LineaPresupuesto } from '../types'

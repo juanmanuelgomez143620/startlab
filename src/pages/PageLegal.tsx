@@ -1,5 +1,6 @@
 import { Card, CardTitle, CardSubtitle, FormGroup } from '../components/ui'
 import { FeedbackPanel } from '../components/FeedbackPanel'
+import { useStore } from '../store/useStore'
 
 const FORMAS = ['Emprendimiento estudiantil (sin personería aún)','Monotributista / Autónomo','Sociedad de Hecho','SAS (Sociedad por Acciones Simplificada)','SRL (Sociedad de Responsabilidad Limitada)','Cooperativa']
 const IMPOSITIVOS = ['Monotributo Categoría A','Monotributo Categoría B','Monotributo Categoría C','Responsable Inscripto','No aplica (proyecto escolar)']
@@ -77,7 +78,7 @@ export default function PageLegal() {
               <div key={t.id} style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 12, padding: '14px 16px', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                 <div onClick={() => toggle(t.id)}
                   style={{
-                    width: 20, height: 20, borderRadius: 4, cursor: 'pointer', flexShrink: 0, marginTop: 2,
+                    width: 20, height: 20, borderRadius: 4, flexShrink: 0, marginTop: 2,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem',
                     transition: 'all 0.18s',
                     background: estado.tramitesDone[t.id] ? 'var(--success)' : 'transparent',

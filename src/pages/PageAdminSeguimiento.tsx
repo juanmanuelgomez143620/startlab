@@ -120,6 +120,7 @@ export default function PageAdminSeguimiento() {
           listadoFinal.push({
             id: `temp-${ins.estudiante_id}`,
             usuario_id: ins.estudiante_id,
+            clase_id: ins.clase_id,
             nombre_emprendimiento: '(Sin Proyecto)',
             completitud: 0,
             estado: 'esperando',
@@ -172,7 +173,7 @@ export default function PageAdminSeguimiento() {
     if (error) {
       alert('Error al calificar: ' + error.message)
     } else {
-      setProyectos(proyectos.map(p => p.id === selectedProy.id ? { ...p, nota, feedback_docente: feedback, estado: 'calificado' } : p))
+      setProyectos(proyectos.map(p => p.id === selectedProy.id ? { ...p, nota: parseFloat(nota), feedback_docente: feedback, estado: 'calificado' } : p))
       setSelectedProy(null)
     }
     setSaving(false)

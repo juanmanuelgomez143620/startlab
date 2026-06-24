@@ -46,7 +46,7 @@ export default function PageEstudianteClases() {
 
         if (!projId) {
           const { data: particip } = await supabase.from('proyecto_participantes').select('proyecto_id, proyectos(codigo_grupo, clase_id)').eq('usuario_id', user.id).maybeSingle()
-          if ((particip?.proyectos as any)?.clase_id === c.id) {
+          if (particip && (particip.proyectos as any)?.clase_id === c.id) {
             projId = particip.proyecto_id
             groupCode = (particip.proyectos as any).codigo_grupo
           }
@@ -178,14 +178,14 @@ export default function PageEstudianteClases() {
       </div>
 
       {unirseOpen && (
-        <Card style={{ marginBottom: 32 }}>
+        <div style={{ marginBottom: 32 }}><Card>
           <CardTitle icon="🔑">Unirse a clase</CardTitle>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase())} placeholder="Código Clase" style={{ flex: 1 }} />
             <Btn onClick={handleJoinClass}>Unirse</Btn>
             <Btn variant="ghost" onClick={() => setUnirseOpen(false)}>Cancelar</Btn>
           </div>
-        </Card>
+        </Card></div>
       )}
 
       {loading ? (

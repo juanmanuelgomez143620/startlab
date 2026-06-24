@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { Btn } from '../components/ui'
 import { toast } from '../components/ui'
+import { supabase } from '../lib/supabase'
 
 const AUTHOR_PHOTO = import.meta.env.VITE_AUTHOR_PHOTO
 
