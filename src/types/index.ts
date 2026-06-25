@@ -104,6 +104,7 @@ export interface DatosForm {
   e_oportunidades: string
   e_debilidades: string
   e_amenazas: string
+  e_propuesta_valor: string  // ¿Qué problema resolvés y para quién?
   // Marketing
   m_segmento: string
   m_perfil: string
@@ -154,7 +155,8 @@ export interface ProyectoEstado {
   gastosFijos: GastoFijo[]
   pronosticoVentas: ProductoPronostico[]
   tramitesDone: Record<string, boolean>
-  secciones_aprobadas?: string[] // IDs de las secciones aprobadas por el docente
+  secciones_aprobadas?: string[]
+  valores: string[]  // Valores del emprendimiento (ej: Honestidad, Innovación)
 }
 
 export interface Proyecto {

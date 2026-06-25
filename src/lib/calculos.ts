@@ -208,7 +208,7 @@ export function calcFinanciero(
 // ── COMPLETITUD DEL PLAN ─────────────────────────────────────
 const SECCIONES_CAMPOS: Record<keyof Omit<Completeness, 'overall'>, (keyof DatosForm)[]> = {
   institucional: ['i_escuela', 'i_modalidad', 'i_curso', 'i_materia', 'i_docente', 'i_ciclo', 'i_nombre_emp', 'i_tipo_negocio', 'i_desc_breve'],
-  estrategica: ['e_mision', 'e_vision', 'e_objetivos', 'e_fortalezas', 'e_oportunidades', 'e_debilidades', 'e_amenazas'],
+  estrategica: ['e_mision', 'e_vision', 'e_propuesta_valor', 'e_objetivos', 'e_fortalezas', 'e_oportunidades', 'e_debilidades', 'e_amenazas'],
   marketing: ['m_segmento', 'm_perfil', 'm_producto', 'm_precio_mix', 'm_plaza', 'm_promocion'],
   produccion: ['p_proceso', 'p_inv_total'],
   financiera: ['f_precio_u', 'f_costo_u', 'f_s1'],
@@ -241,7 +241,7 @@ export const FORM_VACIO: DatosForm = {
   i_escuela: '', i_modalidad: '', i_curso: '', i_materia: '',
   i_docente: '', i_ciclo: '', i_nombre_emp: '', i_rubro: '',
   i_tipo_negocio: '', i_slogan: '', i_desc_breve: '',
-  e_mision: '', e_vision: '', e_objetivos: '',
+  e_mision: '', e_vision: '', e_objetivos: '', e_propuesta_valor: '',
   e_fortalezas: '', e_oportunidades: '', e_debilidades: '', e_amenazas: '',
   m_segmento: '', m_perfil: '', m_zona: '', m_canal: '',
   m_producto: '', m_precio_mix: '', m_plaza: '', m_promocion: '',
@@ -265,4 +265,5 @@ export const ESTADO_VACIO: ProyectoEstado = {
   gastosFijos: [],
   pronosticoVentas: [],
   tramitesDone: {},
+  valores: [],
 }
