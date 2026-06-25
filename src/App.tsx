@@ -9,9 +9,7 @@ export default function App() {
   const { user } = useAuth()
   const { loadFromCloud } = useProject()
   const [authChecked, setAuthChecked] = useState(false)
-  const [appMode, setAppMode] = useState<'landing' | 'app'>(() => {
-    return localStorage.getItem('ep_mode') === 'app' ? 'app' : 'landing'
-  })
+  const [appMode, setAppMode] = useState<'landing' | 'app'>('landing')
 
   useEffect(() => {
     // Give Supabase time to restore session
@@ -24,8 +22,12 @@ export default function App() {
       localStorage.setItem('ep_mode', 'app')
       setAppMode('app')
       loadFromCloud()
+    } else if (authChecked) {
+      // Session expired or not authenticated — reset to landing
+      localStorage.removeItem('ep_mode')
+      setAppMode('landing')
     }
-  }, [user])
+  }, [user, authChecked])
 
   function handleEnterApp() {
     localStorage.setItem('ep_mode', 'app')
