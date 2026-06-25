@@ -93,6 +93,9 @@ export interface DatosForm {
   i_ciclo: string
   i_nombre_emp: string
   i_rubro: string
+  i_tipo_negocio: string   // 'Producto' | 'Servicio' | 'Producto + Servicio'
+  i_slogan: string          // Tagline/lema del emprendimiento (max 80 chars)
+  i_desc_breve: string      // Descripción breve de qué hace el emprendimiento
   // Estratégica
   e_mision: string
   e_vision: string

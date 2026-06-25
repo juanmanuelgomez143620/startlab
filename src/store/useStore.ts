@@ -92,17 +92,14 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'startlab-v3',
-      version: 1, // Incrementar versión para forzar migración si es necesario
+      version: 2,
       migrate: (persistedState: unknown, version: number) => {
-        if (version === 0) {
-          // Migración desde versión anterior: asegurar que existan los nuevos arreglos
-          const state = persistedState as Partial<Store>
-          if (state?.estado) {
-            state.estado = { ...ESTADO_VACIO, ...state.estado }
-          }
-          return state as Store
+        const state = persistedState as Partial<Store>
+        if (version <= 1) {
+          if (state?.estado) state.estado = { ...ESTADO_VACIO, ...state.estado }
+          if (state?.form) state.form = { ...FORM_VACIO, ...state.form }
         }
-        return persistedState as Store
+        return state as Store
       },
       partialize: (s) => ({
         form: s.form,
