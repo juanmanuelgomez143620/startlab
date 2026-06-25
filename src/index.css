@@ -68,3 +68,97 @@ textarea { resize: vertical; min-height: 90px; }
 @media print {
   .no-print { display: none !important; }
 }
+
+/* ── Hamburger oculto en desktop ──────────────────────── */
+.menu-toggle { display: none; }
+
+/* ── Mobile (≤ 768px) ─────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Sidebar: se oculta fuera de pantalla por defecto */
+  .app-sidebar {
+    transform: translateX(-100%);
+  }
+
+  /* Contenido principal: sin margen izquierdo */
+  .app-main {
+    margin-left: 0 !important;
+  }
+
+  /* Botón hamburguesa: aparece en móvil */
+  .menu-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Topbar: padding reducido */
+  .topbar {
+    padding: 10px 14px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  /* Contenido de página: padding reducido */
+  .page-content {
+    padding: 20px 14px !important;
+  }
+
+  /* Título del topbar: ocultar el subtítulo */
+  .topbar-title-sub {
+    display: none !important;
+  }
+
+  /* Título principal del topbar: reducir tamaño */
+  .topbar-title-main {
+    font-size: 0.9rem !important;
+  }
+
+  /* Banner de supervisión: ocultar en móvil (ocupa mucho espacio) */
+  .topbar-supervision {
+    display: none !important;
+  }
+
+  /* Texto de botones del topbar: ocultar, solo ícono */
+  .topbar-btn-label {
+    display: none;
+  }
+
+  /* Botones del topbar: más compactos */
+  .topbar-btn {
+    padding: 8px 9px !important;
+    font-size: 0.8rem !important;
+    min-width: 0 !important;
+    gap: 0 !important;
+  }
+
+  /* Chip de usuario: compacto */
+  .user-chip-name {
+    display: none;
+  }
+  .user-chip-role {
+    display: none;
+  }
+
+  /* Botones Dashboard y PDF del topbar: ocultar (accesibles desde sidebar) */
+  .topbar-dashboard-btn,
+  .topbar-pdf-btn {
+    display: none !important;
+  }
+
+  /* Landing topbar: padding reducido y layout compacto */
+  .landing-topbar {
+    padding: 12px 16px !important;
+    gap: 10px !important;
+  }
+
+  /* Landing hero: padding lateral reducido */
+  .landing-hero {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  /* Ocultar texto largo en botones del landing topbar */
+  .landing-btn-long {
+    display: none;
+  }
+}

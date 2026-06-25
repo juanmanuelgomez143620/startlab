@@ -152,7 +152,7 @@ export default function AppShell() {
       )}
 
       {/* SIDEBAR */}
-      <nav style={{
+      <nav className="app-sidebar" style={{
         width: 260, minWidth: 260, background: 'var(--bg2)',
         borderRight: '1px solid var(--border)',
         display: 'flex', flexDirection: 'column',
@@ -235,30 +235,30 @@ export default function AppShell() {
       </nav>
 
       {/* MAIN */}
-      <div style={{ marginLeft: 260, flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <div className="app-main" style={{ marginLeft: 260, flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         {/* TOPBAR */}
-        <div style={{
+        <div className="topbar" style={{
           position: 'sticky', top: 0, zIndex: 50,
           background: 'rgba(15,15,19,0.9)', backdropFilter: 'blur(12px)',
           borderBottom: '1px solid var(--border)',
-          padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+          padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'nowrap',
         }}>
           <button onClick={() => setSidebarOpen(!isSidebarOpen)}
-            style={{ display: 'none', background: 'none', border: 'none', color: 'var(--text)', fontSize: '1.3rem', cursor: 'pointer', padding: 4 }}
+            style={{ background: 'none', border: 'none', color: 'var(--text)', fontSize: '1.3rem', cursor: 'pointer', padding: 4, flexShrink: 0 }}
             className="menu-toggle">☰</button>
 
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem' }}>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+            <div style={{ minWidth: 0 }}>
+              <div className="topbar-title-main" style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {PAGE_META[activePage]?.title}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text2)' }}>{PAGE_META[activePage]?.sub}</div>
+              <div className="topbar-title-sub" style={{ fontSize: '0.75rem', color: 'var(--text2)' }}>{PAGE_META[activePage]?.sub}</div>
             </div>
 
             {/* Banner de Supervisión para Docentes */}
             {isProfesor && proyectoContexto && (
-              <div style={{ 
-                margin: '0 20px', padding: '6px 16px', borderRadius: 10, 
+              <div className="topbar-supervision" style={{
+                margin: '0 20px', padding: '6px 16px', borderRadius: 10,
                 background: 'rgba(124,106,247,0.15)', border: '1px solid var(--accent)',
                 display: 'flex', alignItems: 'center', gap: 10, flex: 1, maxWidth: 450
               }}>
@@ -278,63 +278,68 @@ export default function AppShell() {
           {/* Botón Volver para Docente (si está en página de proyecto) */}
           {isProfesor && !activePage.startsWith('admin-') && (
             <button onClick={() => { setProyectoId(null); setProyectoContexto(null); setActivePage('admin-seguimiento') }}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid var(--accent)', background: 'rgba(124,106,247,0.1)', color: 'var(--accent)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-              ⬅ Volver al Seguimiento
+              className="topbar-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid var(--accent)', background: 'rgba(124,106,247,0.1)', color: 'var(--accent)', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)', flexShrink: 0 }}>
+              ⬅ <span className="topbar-btn-label">Volver al Seguimiento</span>
             </button>
           )}
 
           {/* User chip or local chip */}
           <NotificationCenter />
-          
+
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'rgba(124,106,247,0.1)', border: '1px solid rgba(124,106,247,0.25)', borderRadius: 99, padding: '4px 12px 4px 6px' }}>
-              <div style={{ width: 26, height: 26, borderRadius: '50%', background: perfil?.rol === 'profesor' ? 'var(--accent2)' : 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#fff' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'rgba(124,106,247,0.1)', border: '1px solid rgba(124,106,247,0.25)', borderRadius: 99, padding: '4px 12px 4px 6px', flexShrink: 0 }}>
+              <div style={{ width: 26, height: 26, borderRadius: '50%', background: perfil?.rol === 'profesor' ? 'var(--accent2)' : 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700, color: '#fff', flexShrink: 0 }}>
                 {(perfil?.nombre_completo || user.email).charAt(0).toUpperCase()}
               </div>
-              <span style={{ fontSize: '0.78rem', fontWeight: 600, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span className="user-chip-name" style={{ fontSize: '0.78rem', fontWeight: 600, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {perfil?.nombre_completo?.split(' ')[0] || user.email.split('@')[0]}
               </span>
-              <span style={{ fontSize: '0.65rem', color: 'var(--accent)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <span className="user-chip-role" style={{ fontSize: '0.65rem', color: 'var(--accent)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 {perfil?.rol === 'profesor' ? 'Docente' : 'Alumno'}
               </span>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(250,204,21,0.08)', border: '1px solid rgba(250,204,21,0.2)', borderRadius: 99, padding: '4px 10px', fontSize: '0.72rem', color: 'var(--warn)', fontWeight: 600 }}>
-              💾 Solo local
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'rgba(250,204,21,0.08)', border: '1px solid rgba(250,204,21,0.2)', borderRadius: 99, padding: '4px 10px', fontSize: '0.72rem', color: 'var(--warn)', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}>
+              💾 <span className="topbar-btn-label">Solo local</span>
             </div>
           )}
 
-          {/* Botón Salir - Siempre visible para poder volver al inicio */}
+          {/* Botón Salir */}
           <button onClick={() => {
               if (user) { signOut(); }
               else { localStorage.removeItem('ep_mode'); window.location.reload(); }
             }}
-            style={{ 
-              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 12px', 
-              borderRadius: 8, border: '1px solid rgba(240,68,68,0.2)', 
-              background: 'rgba(240,68,68,0.05)', color: '#f04444', fontSize: '0.82rem', 
+            className="topbar-btn"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 12px',
+              borderRadius: 8, border: '1px solid rgba(240,68,68,0.2)',
+              background: 'rgba(240,68,68,0.05)', color: '#f04444', fontSize: '0.82rem',
               fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)',
-              marginLeft: 'auto'
+              flexShrink: 0,
             }}>
-            ↪ Salir
+            ↪ <span className="topbar-btn-label">Salir</span>
           </button>
 
           {/* Acciones de proyecto (solo estudiantes) */}
           {!isProfesor && (
             <>
               <button onClick={handleSave} disabled={saving}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg3)', color: 'var(--text)', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-                {saving ? '⏳' : '💾'} Guardar
+                className="topbar-btn"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg3)', color: 'var(--text)', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)', flexShrink: 0 }}>
+                {saving ? '⏳' : '💾'} <span className="topbar-btn-label">Guardar</span>
               </button>
 
               <button onClick={() => setActivePage('dashboard')}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-                📈 Dashboard
+                className="topbar-btn topbar-dashboard-btn"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: 'none', background: 'var(--accent)', color: '#fff', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)', flexShrink: 0 }}>
+                📈 <span className="topbar-btn-label">Dashboard</span>
               </button>
 
               <button onClick={handleExport}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(74,222,128,0.2)', background: 'rgba(74,222,128,0.1)', color: 'var(--success)', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
-                📄 PDF
+                className="topbar-btn topbar-pdf-btn"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(74,222,128,0.2)', background: 'rgba(74,222,128,0.1)', color: 'var(--success)', fontSize: '0.85rem', fontWeight: 500, cursor: 'pointer', fontFamily: 'var(--font-body)', flexShrink: 0 }}>
+                📄 <span className="topbar-btn-label">PDF</span>
               </button>
             </>
           )}
@@ -342,7 +347,7 @@ export default function AppShell() {
         </div>
 
         {/* PAGE CONTENT */}
-        <div style={{ padding: '32px', maxWidth: 1100, width: '100%' }}>
+        <div className="page-content" style={{ padding: '32px', maxWidth: 1100, width: '100%' }}>
           <Suspense fallback={<PageLoader />}>
             <PageComponent />
           </Suspense>

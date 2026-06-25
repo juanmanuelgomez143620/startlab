@@ -89,18 +89,18 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh', overflowY: 'auto' }}>
       {/* TOPBAR */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 40px', borderBottom: '1px solid var(--border)' }}>
+      <div className="landing-topbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 40px', borderBottom: '1px solid var(--border)' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.5px' }}>
           Emprende<span style={{ color: 'var(--accent)' }}>Plan</span>
         </div>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <Btn variant="secondary" size="sm" onClick={() => openModal('estudiante')}>🎓 Ingresar como Alumno</Btn>
-          <Btn variant="primary" size="sm" onClick={() => openModal('profesor')}>👨‍🏫 Ingresar como Docente</Btn>
+        <div className="landing-topbar-btns" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <Btn variant="secondary" size="sm" onClick={() => openModal('estudiante')}>🎓 <span className="landing-btn-long">Ingresar como </span>Alumno</Btn>
+          <Btn variant="primary" size="sm" onClick={() => openModal('profesor')}>👨‍🏫 <span className="landing-btn-long">Ingresar como </span>Docente</Btn>
         </div>
       </div>
 
       {/* HERO */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '60px 32px 40px', textAlign: 'center' }}>
+      <div className="landing-hero" style={{ maxWidth: 900, margin: '0 auto', padding: '60px 32px 40px', textAlign: 'center' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(124,106,247,0.12)', border: '1px solid rgba(124,106,247,0.25)', borderRadius: 99, padding: '6px 16px', marginBottom: 24 }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Herramienta Pedagógica Gratuita</span>
         </div>
