@@ -267,4 +267,5 @@ export const ESTADO_VACIO: ProyectoEstado = {
   tramitesDone: {},
   valores: [],
   redes_sociales: [],
+  pasos_proceso: [],
 }

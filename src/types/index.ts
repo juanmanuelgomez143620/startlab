@@ -159,6 +159,7 @@ export interface ProyectoEstado {
   secciones_aprobadas?: string[]
   valores: string[]  // Valores del emprendimiento (ej: Honestidad, Innovación)
   redes_sociales: string[]  // Plataformas activas (Instagram, TikTok, etc.)
+  pasos_proceso: string[]  // Pasos numerados del proceso productivo
 }
 
 export interface Proyecto {
