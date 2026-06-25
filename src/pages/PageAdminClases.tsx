@@ -42,15 +42,14 @@ export default function PageAdminClases() {
     try {
       const { data, error } = await supabase
         .from('clases')
-        .select('*')
+        .select('*, clase_estudiantes(count)')
         .eq('profesor_id', user.id)
 
       if (error) throw error
       if (data) {
         setClases(data.map(c => ({
           ...c,
-          curso: c.descripcion || '',
-          alumnos_count: 0
+          alumnos_count: c.clase_estudiantes?.[0]?.count || 0
         })))
       }
     } catch (e) {
@@ -92,7 +91,7 @@ export default function PageAdminClases() {
         .update({
           nombre,
           escuela,
-          descripcion: curso,
+          curso,
           materia,
           ciclo_lectivo: ciclo
         })
@@ -114,25 +113,27 @@ export default function PageAdminClases() {
   async function crearClase(e: React.FormEvent) {
     e.preventDefault()
     if (!nombre || !escuela || !user) return
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('clases')
       .insert({
         nombre,
         escuela,
-        descripcion: curso,
+        curso,
         materia,
         ciclo_lectivo: ciclo,
         profesor_id: user.id,
         codigo: Math.random().toString(36).substring(2, 8).toUpperCase()
       })
+      .select()
+      .single()
 
     if (error) alert(error.message)
     else {
+      setClases([...clases, { ...data, alumnos_count: 0 }])
       setNombre('')
       setEscuela('')
       setCurso('')
       setMateria('')
-      fetchClases()
     }
   }
 

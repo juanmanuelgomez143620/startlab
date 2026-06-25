@@ -54,7 +54,6 @@ export default function PageEstudianteClases() {
 
         return {
           ...c,
-          curso: c.descripcion || '',
           docente_nombre: p?.nombre_completo || 'Docente',
           hasProject: !!projId,
           groupCode
