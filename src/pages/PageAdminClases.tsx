@@ -229,7 +229,7 @@ export default function PageAdminClases() {
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        const msg = `Hola! 👋 Sumate al proyecto de *${c.escuela}* en *Startlab*.\n📚 Materia: ${c.materia}\n🔑 Código: *${c.codigo}*\n🔗 ${window.location.origin}`;
+                        const msg = `Hola! 👋 Sumate al proyecto de *${c.escuela}* en *EmprendePlan*.\n📚 Materia: ${c.materia}\n🔑 Código: *${c.codigo}*\n🔗 ${window.location.origin}`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                       }}
                       style={{ background: 'var(--success)', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

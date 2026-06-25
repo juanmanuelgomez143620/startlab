@@ -214,7 +214,7 @@ export default function PageEstudianteClases() {
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
-                              const msg = `¡Hola! 👋 Sumate a mi equipo para el proyecto de *${c.materia}* en *Startlab*.\n🔑 Código de Equipo: *${c.groupCode}*\n🔗 ${window.location.origin}`;
+                              const msg = `¡Hola! 👋 Sumate a mi equipo para el proyecto de *${c.materia}* en *EmprendePlan*.\n🔑 Código de Equipo: *${c.groupCode}*\n🔗 ${window.location.origin}`;
                               window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                             }}
                             style={{ background: '#25D366', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}
@@ -223,7 +223,7 @@ export default function PageEstudianteClases() {
                             onClick={(e) => {
                               e.stopPropagation();
                               const subject = `Invitación al equipo: ${c.materia}`;
-                              const body = `¡Hola!\n\nTe invito a sumarte a mi equipo en Startlab para la materia ${c.materia}.\n\nCódigo de Equipo: ${c.groupCode}\nEnlace: ${window.location.origin}`;
+                              const body = `¡Hola!\n\nTe invito a sumarte a mi equipo en EmprendePlan para la materia ${c.materia}.\n\nCódigo de Equipo: ${c.groupCode}\nEnlace: ${window.location.origin}`;
                               window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                             }}
                             style={{ background: 'var(--bg3)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 4, padding: '4px 8px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}

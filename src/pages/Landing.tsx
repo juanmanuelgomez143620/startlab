@@ -4,8 +4,6 @@ import { Btn } from '../components/ui'
 import { toast } from '../components/ui'
 import { supabase } from '../lib/supabase'
 
-const AUTHOR_PHOTO = import.meta.env.VITE_AUTHOR_PHOTO
-
 const FEATURES = [
   { icon: '🎯', title: 'Gestión Estratégica', desc: 'Misión, Visión, Objetivos y análisis FODA con guías para cada campo.' },
   { icon: '📣', title: 'Marketing Completo', desc: 'Segmentación, análisis de competidores y las 4P del marketing mix.' },
@@ -93,7 +91,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
       {/* TOPBAR */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 40px', borderBottom: '1px solid var(--border)' }}>
         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.5px' }}>
-          Start<span style={{ color: 'var(--accent)' }}>lab</span>
+          Emprende<span style={{ color: 'var(--accent)' }}>Plan</span>
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <Btn variant="secondary" size="sm" onClick={() => openModal('estudiante')}>🎓 Ingresar como Alumno</Btn>
@@ -163,15 +161,36 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
         </div>
 
         {/* AUTHOR */}
-        <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, display: 'flex', alignItems: 'center', gap: 20, marginBottom: 32, textAlign: 'left' }}>
-          <img src={AUTHOR_PHOTO} alt="Juan Manuel Gómez" style={{ width: 70, height: 70, borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(124,106,247,0.4)', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 600, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>Desarrollado por</div>
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem', marginBottom: 4 }}>Juan Manuel Gómez</div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text2)', lineHeight: 1.5 }}>Profesor en Ciencias Económicas · Licenciado en Educación<br />Experto en Tecnología Educativa</div>
+        <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px 28px', marginBottom: 24, textAlign: 'left' }}>
+          <div style={{ fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 10 }}>Desarrollado por</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.2rem', marginBottom: 4 }}>Juan Manuel Gómez</div>
+          <div style={{ fontSize: '0.88rem', color: 'var(--text2)', lineHeight: 1.7, marginBottom: 16 }}>
+            Profesor en Ciencias Económicas · Licenciado en Educación<br />
+            Experto en Tecnología Educativa
+          </div>
+          <div style={{ height: 1, background: 'var(--border)', marginBottom: 14 }} />
+          <div style={{ fontSize: '0.72rem', color: 'var(--text3)', marginBottom: 6, fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>Tecnología utilizada</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {[
+              { label: 'React 18', desc: 'Interfaz de usuario' },
+              { label: 'TypeScript', desc: 'Tipado estático' },
+              { label: 'Vite', desc: 'Build & Dev server' },
+              { label: 'Zustand', desc: 'Estado global' },
+              { label: 'Supabase', desc: 'Base de datos & Auth' },
+              { label: 'Chart.js', desc: 'Gráficos' },
+              { label: 'jsPDF', desc: 'Exportación PDF' },
+            ].map(t => (
+              <div key={t.label} style={{ background: 'rgba(124,106,247,0.07)', border: '1px solid rgba(124,106,247,0.18)', borderRadius: 8, padding: '5px 12px', textAlign: 'center' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--accent)' }}>{t.label}</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text3)' }}>{t.desc}</div>
+              </div>
+            ))}
           </div>
         </div>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text3)', textAlign: 'center', paddingBottom: 40 }}>© 2026 Startlab · Herramienta pedagógica de uso libre para instituciones educativas</div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text3)', textAlign: 'center', paddingBottom: 40 }}>
+          © 2026 EmprendePlan · Herramienta pedagógica de uso libre para instituciones educativas<br />
+          <span style={{ color: 'var(--text3)', fontSize: '0.68rem' }}>emprendeplan.vercel.app</span>
+        </div>
       </div>
 
       {/* LOGIN MODAL */}

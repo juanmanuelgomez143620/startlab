@@ -26,8 +26,6 @@ const PageLoader = () => (
   </div>
 )
 
-const AUTHOR_PHOTO = import.meta.env.VITE_AUTHOR_PHOTO
-
 const NAV_ITEMS_ALL = [
   { id: 'mis-clases', label: 'Mis Clases', icon: '🏫', section: 'gestiones', roles: ['estudiante'] },
   { id: 'institucional', label: 'Datos Institucionales', icon: '🏠', section: 'proyecto', roles: ['estudiante', 'profesor'] },
@@ -165,7 +163,7 @@ export default function AppShell() {
       }}>
         {/* Logo */}
         <div style={{ padding: '24px 20px 16px', fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.3rem', letterSpacing: '-0.5px', borderBottom: '1px solid var(--border)' }}>
-          Start<span style={{ color: 'var(--accent)' }}>lab</span>
+          Emprende<span style={{ color: 'var(--accent)' }}>Plan</span>
         </div>
 
         {/* Nav */}
@@ -223,11 +221,15 @@ export default function AppShell() {
         {/* Logout (OLD) - Removed for cleaner UI */}
         
         {/* Author */}
-        <div style={{ padding: '14px 16px', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(124,106,247,0.04)' }}>
-          <img src={AUTHOR_PHOTO} alt="Juan Manuel Gómez" style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', border: '2px solid rgba(124,106,247,0.4)', flexShrink: 0 }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Juan Manuel Gómez</div>
-            <div style={{ fontSize: '0.62rem', color: 'var(--text3)', lineHeight: 1.4, marginTop: 1 }}>Prof. Cs. Económicas · Lic. Educación</div>
+        <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)', background: 'rgba(124,106,247,0.04)' }}>
+          <div style={{ fontSize: '0.6rem', color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: 4 }}>Desarrollado por</div>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text)', marginBottom: 2 }}>Juan Manuel Gómez</div>
+          <div style={{ fontSize: '0.62rem', color: 'var(--text3)', lineHeight: 1.5 }}>
+            Prof. en Ciencias Económicas<br />
+            Lic. en Educación · Experto en Tecnología Educativa
+          </div>
+          <div style={{ marginTop: 6, fontSize: '0.58rem', color: 'var(--text3)', borderTop: '1px solid var(--border)', paddingTop: 5 }}>
+            React · TypeScript · Vite · Supabase · jsPDF
           </div>
         </div>
       </nav>

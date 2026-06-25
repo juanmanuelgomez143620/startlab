@@ -42,7 +42,7 @@ export default function App() {
         alignItems: 'center', justifyContent: 'center', gap: 16
       }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 800, letterSpacing: -1 }}>
-          Start<span style={{ color: 'var(--accent)' }}>lab</span>
+          Emprende<span style={{ color: 'var(--accent)' }}>Plan</span>
         </div>
         <div style={{ width: 200, height: 3, background: 'var(--border)', borderRadius: 99, overflow: 'hidden' }}>
           <div style={{

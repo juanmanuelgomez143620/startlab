@@ -1,5 +1,5 @@
 /**
- * Motor de cálculos financieros — Startlab
+ * Motor de cálculos financieros — EmprendePlan
  * Versión corregida con validaciones y precisión numérica
  */
 
