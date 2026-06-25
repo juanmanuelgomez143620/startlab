@@ -92,10 +92,10 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'startlab-v3',
-      version: 3,
+      version: 4,
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as Partial<Store>
-        if (version <= 2) {
+        if (version <= 3) {
           if (state?.estado) state.estado = { ...ESTADO_VACIO, ...state.estado }
           if (state?.form) state.form = { ...FORM_VACIO, ...state.form }
         }

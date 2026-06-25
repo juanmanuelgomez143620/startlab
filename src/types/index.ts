@@ -42,6 +42,7 @@ export interface Competidor {
   precio: string
   fortaleza: string
   debilidad: string
+  ventaja?: string  // Nuestra ventaja frente a este competidor
 }
 
 export interface Equipo {
@@ -157,6 +158,7 @@ export interface ProyectoEstado {
   tramitesDone: Record<string, boolean>
   secciones_aprobadas?: string[]
   valores: string[]  // Valores del emprendimiento (ej: Honestidad, Innovación)
+  redes_sociales: string[]  // Plataformas activas (Instagram, TikTok, etc.)
 }
 
 export interface Proyecto {

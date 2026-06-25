@@ -266,4 +266,5 @@ export const ESTADO_VACIO: ProyectoEstado = {
   pronosticoVentas: [],
   tramitesDone: {},
   valores: [],
+  redes_sociales: [],
 }
