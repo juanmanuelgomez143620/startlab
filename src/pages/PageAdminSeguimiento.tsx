@@ -56,11 +56,16 @@ export default function PageAdminSeguimiento() {
     console.log('[Seguimiento] Iniciando diagnótico profundo para docente:', user.id)
     
     try {
-      // 1. Obtener Clases
-      const { data: clasesData } = await supabase.from('clases').select('*').eq('profesor_id', user.id)
+      // 1. Obtener Clases (propias + co-dictadas como colaborador)
+      const { data: idsData, error: errIds } = await supabase.rpc('mis_clases_como_profesor')
+      if (errIds) console.error('[Seguimiento] ERROR IDS CLASES:', errIds)
+      const idsClas = (idsData || []).map((r: any) => (typeof r === 'string' ? r : Object.values(r)[0])) as string[]
+
+      const { data: clasesData } = idsClas.length > 0
+        ? await supabase.from('clases').select('*').in('id', idsClas)
+        : { data: [] as ClaseBasica[] }
       setMisClases(clasesData || [])
-      const idsClas = clasesData?.map(c => c.id) || []
-      
+
       if (idsClas.length === 0) {
         setProyectos([])
         setLoading(false)

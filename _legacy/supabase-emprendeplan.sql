@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.clases (
   escuela         TEXT,
   modalidad       TEXT,
   materia         TEXT,
+  curso           TEXT,
   ciclo_lectivo   TEXT,
   codigo          TEXT UNIQUE NOT NULL DEFAULT upper(substr(md5(random()::text), 1, 6)),
   descripcion     TEXT,

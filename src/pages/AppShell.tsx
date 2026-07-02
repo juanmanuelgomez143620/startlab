@@ -18,6 +18,7 @@ const PageReporte = lazy(() => import('./PageReporte'))
 const PageAdminClases = lazy(() => import('./PageAdminClases'))
 const PageAdminSeguimiento = lazy(() => import('./PageAdminSeguimiento'))
 const PageEstudianteClases = lazy(() => import('./PageEstudianteClases'))
+const PageMiEquipo = lazy(() => import('./PageMiEquipo'))
 import { NotificationCenter } from '../components/NotificationCenter'
 
 const PageLoader = () => (
@@ -28,6 +29,7 @@ const PageLoader = () => (
 
 const NAV_ITEMS_ALL = [
   { id: 'mis-clases', label: 'Mis Clases', icon: '🏫', section: 'gestiones', roles: ['estudiante'] },
+  { id: 'mi-equipo', label: 'Mi Equipo', icon: '👥', section: 'proyecto', roles: ['estudiante'] },
   { id: 'institucional', label: 'Datos Institucionales', icon: '🏠', section: 'proyecto', roles: ['estudiante', 'profesor'] },
   { id: 'estrategica', label: 'Estratégica', icon: '🎯', section: 'gestiones', roles: ['estudiante', 'profesor'] },
   { id: 'marketing', label: 'Marketing', icon: '📢', section: 'gestiones', roles: ['estudiante', 'profesor'] },
@@ -52,6 +54,7 @@ const PAGE_META: Record<string, { title: string; sub: string }> = {
   'admin-clases': { title: 'Panel del Docente', sub: 'Administrá tus clases y códigos de acceso' },
   'admin-seguimiento': { title: 'Seguimiento de Proyectos', sub: 'Monitoreá el avance en tiempo real de tus alumnos' },
   'mis-clases': { title: 'Mis Clases', sub: 'Inscribite a una clase o gestioná tus proyectos' },
+  'mi-equipo': { title: 'Mi Equipo', sub: 'Gestioná los integrantes de tu equipo de trabajo' },
 }
 
 export default function AppShell() {
@@ -137,8 +140,9 @@ export default function AppShell() {
     reporte: PageReporte,
     'admin-clases': PageAdminClases,
     'admin-seguimiento': PageAdminSeguimiento,
-    'mis-clases': PageEstudianteClases
-  } as Record<string, any>)[activePage]) 
+    'mis-clases': PageEstudianteClases,
+    'mi-equipo': PageMiEquipo,
+  } as Record<string, any>)[activePage])
   ?? (isProfesor ? PageAdminClases : PageEstudianteClases)
 
   return (

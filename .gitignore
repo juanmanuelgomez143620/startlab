@@ -5,3 +5,5 @@ dist
 *.local
 .DS_Store
 tsc_output*.txt
+
+.vercel

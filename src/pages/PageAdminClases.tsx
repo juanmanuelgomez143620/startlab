@@ -3,23 +3,36 @@ import { supabase } from '../lib/supabase'
 import { useStore } from '../store/useStore'
 import { Btn } from '../components/ui'
 import { SAMPLE_PROJECT } from '../lib/sampleData'
+import { toast } from '../components/ui'
+
+interface DocenteBasico {
+  id: string
+  nombre_completo: string
+  email: string
+  rol: 'titular' | 'colaborador'
+}
 
 interface ClaseConConteo {
   id: string
   nombre: string
   codigo: string
+  codigo_docente: string
   escuela: string
   materia: string
   curso: string
   ciclo_lectivo: string
   profesor_id: string
   alumnos_count: number
+  esTitular: boolean
+  docentes: DocenteBasico[]
 }
 
 export default function PageAdminClases() {
   const { user, loadProject, setActivePage } = useStore()
   const [clases, setClases] = useState<ClaseConConteo[]>([])
   const [loading, setLoading] = useState(true)
+  const [codigoColaborar, setCodigoColaborar] = useState('')
+  const [uniendo, setUniendo] = useState(false)
 
   const verProyectoModelo = () => {
     loadProject(SAMPLE_PROJECT.form, SAMPLE_PROJECT.estado)
@@ -40,22 +53,96 @@ export default function PageAdminClases() {
     if (!user) return
     setLoading(true)
     try {
+      const { data: idsData, error: errIds } = await supabase.rpc('mis_clases_como_profesor')
+      if (errIds) throw errIds
+      const ids = (idsData || []).map((r: any) => (typeof r === 'string' ? r : Object.values(r)[0]))
+      if (ids.length === 0) {
+        setClases([])
+        setLoading(false)
+        return
+      }
+
       const { data, error } = await supabase
         .from('clases')
         .select('*, clase_estudiantes(count)')
-        .eq('profesor_id', user.id)
+        .in('id', ids)
 
       if (error) throw error
+
+      const { data: docentesData } = await supabase
+        .from('clase_profesores')
+        .select('clase_id, profesor_id, rol, perfiles(nombre_completo, email)')
+        .in('clase_id', ids)
+
+      const { data: titularesData } = await supabase
+        .from('perfiles')
+        .select('id, nombre_completo, email')
+        .in('id', (data || []).map((c: any) => c.profesor_id))
+
+      const titularesMap = new Map((titularesData || []).map((p: any) => [p.id, p]))
+
       if (data) {
-        setClases(data.map(c => ({
-          ...c,
-          alumnos_count: c.clase_estudiantes?.[0]?.count || 0
-        })))
+        setClases(data.map((c: any) => {
+          const titular = titularesMap.get(c.profesor_id)
+          const colaboradores: DocenteBasico[] = (docentesData || [])
+            .filter((d: any) => d.clase_id === c.id)
+            .map((d: any) => ({ id: d.profesor_id, nombre_completo: d.perfiles?.nombre_completo || '—', email: d.perfiles?.email || '', rol: 'colaborador' as const }))
+
+          const docentes: DocenteBasico[] = [
+            { id: c.profesor_id, nombre_completo: titular?.nombre_completo || 'Docente', email: titular?.email || '', rol: 'titular' as const },
+            ...colaboradores,
+          ]
+
+          return {
+            ...c,
+            alumnos_count: c.clase_estudiantes?.[0]?.count || 0,
+            esTitular: c.profesor_id === user.id,
+            docentes,
+          }
+        }))
       }
     } catch (e) {
       console.error(e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function unirseComoColaborador(e: React.FormEvent) {
+    e.preventDefault()
+    const clean = codigoColaborar.trim().toUpperCase()
+    if (!clean || !user) return
+    setUniendo(true)
+    try {
+      const { data: cl, error: errCl } = await supabase.from('clases').select('id, profesor_id').eq('codigo_docente', clean).maybeSingle()
+      if (errCl || !cl) { toast('Código de docente no encontrado', 'error'); return }
+      if (cl.profesor_id === user.id) { toast('Ya sos el titular de esa clase', 'warn'); return }
+
+      const { error } = await supabase.from('clase_profesores').insert({ clase_id: cl.id, profesor_id: user.id })
+      if (error) {
+        if (error.code === '23505') toast('Ya formás parte de esta clase', 'warn')
+        else throw error
+      } else {
+        toast('¡Te uniste como colaborador!', 'success')
+        setCodigoColaborar('')
+        fetchClases()
+      }
+    } catch (e) {
+      console.error(e)
+      toast('Error al unirse como colaborador', 'error')
+    } finally {
+      setUniendo(false)
+    }
+  }
+
+  async function expulsarColaborador(claseId: string, profesorId: string) {
+    if (!confirm('¿Quitar a este docente de la clase?')) return
+    try {
+      const { error } = await supabase.from('clase_profesores').delete().eq('clase_id', claseId).eq('profesor_id', profesorId)
+      if (error) throw error
+      fetchClases()
+    } catch (e) {
+      toast('Error al quitar al colaborador', 'error')
     }
   }
 
@@ -96,9 +183,9 @@ export default function PageAdminClases() {
           ciclo_lectivo: ciclo
         })
         .eq('id', editId)
-      
+
       if (error) throw error
-      
+
       setEditId(null)
       setNombre('')
       setEscuela('')
@@ -129,11 +216,11 @@ export default function PageAdminClases() {
 
     if (error) alert(error.message)
     else {
-      setClases([...clases, { ...data, alumnos_count: 0 }])
       setNombre('')
       setEscuela('')
       setCurso('')
       setMateria('')
+      fetchClases()
     }
   }
 
@@ -186,6 +273,17 @@ export default function PageAdminClases() {
         </form>
       </div>
 
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 16, padding: 24, marginBottom: 24 }}>
+        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 8 }}>👩‍🏫 Unirme a una clase como colaborador</h3>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text2)', marginBottom: 16 }}>
+          Pedile a otro docente el <b>código de docente</b> de su clase para co-administrarla: ver alumnos, calificar y dejar feedback.
+        </p>
+        <form onSubmit={unirseComoColaborador} style={{ display: 'flex', gap: 10 }}>
+          <input type="text" placeholder="Código de docente" value={codigoColaborar} onChange={e => setCodigoColaborar(e.target.value.toUpperCase())} style={{ flex: 1 }} />
+          <Btn variant="primary" type="submit" disabled={uniendo}>{uniendo ? 'Uniendo...' : 'Unirme'}</Btn>
+        </form>
+      </div>
+
       {loading ? (
         <div style={{ color: 'var(--text3)', textAlign: 'center', padding: 40 }}>Cargando tus clases...</div>
       ) : clases.length === 0 ? (
@@ -200,10 +298,10 @@ export default function PageAdminClases() {
             const colors = ['#7c6af7', '#f7a26a', '#4ade80', '#f87171', '#38bdf8']
             const color = colors[idx % colors.length]
             return (
-              <div key={c.id} style={{ 
-                background: 'var(--card)', 
-                border: '1px solid var(--border)', 
-                borderRadius: 12, 
+              <div key={c.id} style={{
+                background: 'var(--card)',
+                border: '1px solid var(--border)',
+                borderRadius: 12,
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
@@ -211,22 +309,24 @@ export default function PageAdminClases() {
                 cursor: 'pointer'
               }} className="hover:shadow-xl">
                 {/* Header Estilo Classroom */}
-                <div style={{ 
-                  height: 100, 
+                <div style={{
+                  height: 100,
                   background: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), ${color}`,
                   padding: '16px 20px',
                   position: 'relative'
                 }}>
                   <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 8 }}>
-                    <button 
+                    <button
                       onClick={(e) => startEdit(e, c)}
                       style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.6rem', fontWeight: 700, cursor: 'pointer' }}
                     >EDITAR</button>
-                    <button 
-                      onClick={(e) => eliminarClase(e, c.id)}
-                      style={{ background: 'rgba(255,0,0,0.3)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.6rem', fontWeight: 700, cursor: 'pointer' }}
-                    >BORRAR</button>
-                    <button 
+                    {c.esTitular && (
+                      <button
+                        onClick={(e) => eliminarClase(e, c.id)}
+                        style={{ background: 'rgba(255,0,0,0.3)', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 8px', fontSize: '0.6rem', fontWeight: 700, cursor: 'pointer' }}
+                      >BORRAR</button>
+                    )}
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         const msg = `Hola! 👋 Sumate al proyecto de *${c.escuela}* en *EmprendePlan*.\n📚 Materia: ${c.materia}\n🔑 Código: *${c.codigo}*\n🔗 ${window.location.origin}`;
@@ -242,11 +342,11 @@ export default function PageAdminClases() {
                   </div>
                   <h4 style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 700, margin: 0, textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>{c.materia}</h4>
                   <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.9rem', marginTop: 2 }}>{c.curso}</div>
-                  
+
                   {/* Docente Circle Avatar */}
-                  <div style={{ 
-                    position: 'absolute', bottom: -30, right: 20, 
-                    width: 60, height: 60, borderRadius: '50%', 
+                  <div style={{
+                    position: 'absolute', bottom: -30, right: 20,
+                    width: 60, height: 60, borderRadius: '50%',
                     background: 'var(--bg2)', border: '4px solid var(--card)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '1.5rem', fontWeight: 800, color: color
@@ -258,14 +358,44 @@ export default function PageAdminClases() {
                 {/* Body de Tarjeta */}
                 <div style={{ padding: '20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}>{c.escuela}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text3)', marginBottom: 16 }}>Código de clase: <strong style={{color: 'var(--text2)'}}>{c.codigo}</strong></div>
-                  
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text3)', marginBottom: 12 }}>Código de alumnos: <strong style={{color: 'var(--text2)'}}>{c.codigo}</strong></div>
+
+                  {/* Docentes de la clase */}
+                  <div style={{ marginBottom: 12, padding: 10, background: 'rgba(124,106,247,0.04)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>Docentes</div>
+                    {c.docentes.map(d => (
+                      <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', marginBottom: 4 }}>
+                        <span>
+                          {d.nombre_completo} {d.rol === 'titular' && <span style={{ fontSize: '0.6rem', fontWeight: 700, color: color, marginLeft: 4 }}>TITULAR</span>}
+                        </span>
+                        {c.esTitular && d.rol === 'colaborador' && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); expulsarColaborador(c.id, d.id) }}
+                            style={{ background: 'none', border: 'none', color: 'var(--error)', cursor: 'pointer', fontSize: '0.7rem' }}
+                            title="Quitar de la clase"
+                          >✕</button>
+                        )}
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, paddingTop: 6, borderTop: '1px solid var(--border)' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text3)' }}>Código docente: <strong style={{ color: 'var(--text2)' }}>{c.codigo_docente}</strong></span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const msg = `Hola! 👋 Te invito a co-administrar la clase de *${c.materia}* (${c.escuela}) en *EmprendePlan*.\n🔑 Código de docente: *${c.codigo_docente}*\n🔗 ${window.location.origin}`;
+                          window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+                        }}
+                        style={{ background: 'var(--bg3)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 4, padding: '3px 8px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}
+                      >Invitar</button>
+                    </div>
+                  </div>
+
                   <div style={{ marginTop: 'auto', paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text3)' }}>
                       Ciclo {c.ciclo_lectivo || '2026'} • 👥 {c.alumnos_count} alumnos
                     </div>
-                    <Btn 
-                      variant="ghost" 
+                    <Btn
+                      variant="ghost"
                       onClick={() => setActivePage('admin-seguimiento')}
                       style={{ padding: '6px 0', fontSize: '0.8rem', fontWeight: 700, color: color }}
                     >

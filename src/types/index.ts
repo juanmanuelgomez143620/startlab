@@ -14,6 +14,21 @@ export interface Perfil {
   created_at?: string
 }
 
+// ── CO-DOCENCIA Y EQUIPOS ──────────────────────────────────────
+export interface ClaseProfesor {
+  id: string
+  clase_id: string
+  profesor_id: string
+  rol: 'titular' | 'colaborador'
+  created_at?: string
+}
+
+export interface CompaneroDisponible {
+  id: string
+  nombre_completo: string
+  email: string
+}
+
 // ── FEEDBACK ─────────────────────────────────────────────────
 export interface ComentarioSeccion {
   id: string

@@ -4,9 +4,12 @@ import { useStore } from '../store/useStore'
 import { calcCompleteness, FORM_VACIO, ESTADO_VACIO } from '../lib/calculos'
 import type { DatosForm, ProyectoEstado, Proyecto } from '../types'
 
-type ProyectoPayload = Omit<Proyecto, 'id' | 'estado'> & {
+type ProyectoUpdatePayload = Omit<Proyecto, 'id' | 'estado' | 'usuario_id'> & {
   estado: string
   updated_at: string
+}
+type ProyectoInsertPayload = ProyectoUpdatePayload & {
+  usuario_id: string
   codigo_grupo?: string
 }
 
@@ -17,8 +20,9 @@ export function useProject() {
     if (!user) return
     try {
       const comp = calcCompleteness(form, estado.secciones_aprobadas || [])
-      const payload: ProyectoPayload = {
-        usuario_id: user.id,
+      // OJO: usuario_id NUNCA va en el UPDATE — es el dueño/líder del equipo,
+      // y un participante que guarda no debe poder robarse la titularidad del proyecto.
+      const payload: ProyectoUpdatePayload = {
         nombre_emprendimiento: form.i_nombre_emp || 'Sin nombre',
         rubro: form.i_rubro || null,
         datos_form: form,
@@ -46,9 +50,13 @@ export function useProject() {
           throw error
         }
       } else {
-        // Al crear uno nuevo, le generamos un código de grupo
-        payload.codigo_grupo = Math.random().toString(36).substring(2, 10).toUpperCase()
-        const { data, error } = await supabase.from('proyectos').insert(payload).select().single()
+        // Al crear uno nuevo, sí se fija el dueño y se genera un código de grupo
+        const insertPayload: ProyectoInsertPayload = {
+          ...payload,
+          usuario_id: user.id,
+          codigo_grupo: Math.random().toString(36).substring(2, 10).toUpperCase(),
+        }
+        const { data, error } = await supabase.from('proyectos').insert(insertPayload).select().single()
         if (error) {
           console.error('[useProject] Error en INSERT:', error.code, error.message, error.details)
           throw error
@@ -155,6 +163,7 @@ export function useProject() {
       
       if (errJoin) {
         if (errJoin.code === '23505') return { ok: true, id: proj.id } // Ya estaba unido
+        if (errJoin.message?.includes('ya pertenece a un equipo')) return { ok: false, msg: errJoin.message }
         throw errJoin
       }
 
