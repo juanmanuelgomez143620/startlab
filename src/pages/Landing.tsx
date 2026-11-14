@@ -23,6 +23,22 @@ const RUBROS = [
   '⚡ Energía Renovable', '🌍 Medio Ambiente', '🔧 Otro / Sin definir',
 ]
 
+// Supabase devuelve los errores de auth en inglés
+function traducirErrorAuth(err: unknown, porDefecto: string): string {
+  const msg = err instanceof Error ? err.message : ''
+  if (!msg) return porDefecto
+  const m = msg.toLowerCase()
+  if (m.includes('already registered') || m.includes('already been registered')) return 'Ya existe una cuenta con ese email. Usá "Iniciar sesión".'
+  if (m.includes('invalid login credentials')) return 'Email o contraseña incorrectos.'
+  if (m.includes('email not confirmed')) return 'Tenés que confirmar tu email antes de ingresar (revisá tu casilla y spam).'
+  if (m.includes('rate limit') || m.includes('too many')) return 'Hubo demasiados intentos seguidos. Esperá unos minutos y volvé a intentar.'
+  if (m.includes('password should be') || m.includes('weak password')) return 'La contraseña es demasiado débil (mínimo 6 caracteres).'
+  if (m.includes('invalid') && m.includes('email')) return 'El email no es válido.'
+  if (m.includes('database error')) return 'No se pudo crear la cuenta. Intentá de nuevo en unos minutos.'
+  if (m.includes('failed to fetch') || m.includes('network')) return 'No hay conexión con el servidor. Revisá tu internet.'
+  return msg
+}
+
 type ModalRole = 'estudiante' | 'profesor'
 type ModalTab = 'login' | 'register'
 
@@ -56,7 +72,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
       onEnter()
       toast('¡Bienvenido! Sesión iniciada.', 'success')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesión.')
+      setError(traducirErrorAuth(err, 'Error al iniciar sesión.'))
     } finally { setLoading(false) }
   }
 
@@ -78,7 +94,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
       onEnter()
       toast('¡Cuenta creada con éxito!', 'success')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al registrarse.')
+      setError(traducirErrorAuth(err, 'Error al registrarse.'))
     } finally { setLoading(false) }
   }
 
@@ -251,7 +267,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
                 {modalRole === 'estudiante' && (
                   <div style={{ marginBottom: 14 }}>
                     <label style={{ fontSize: '0.8rem', color: 'var(--text2)', fontWeight: 500, display: 'block', marginBottom: 6 }}>Código de clase (opcional)</label>
-                    <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase())} placeholder="Ej: ABC123" />
+                    <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder="Ej: ABC123" />
                     <div style={{ fontSize: '0.72rem', color: 'var(--text3)', marginTop: 4 }}>Tu docente te compartirá este código</div>
                   </div>
                 )}

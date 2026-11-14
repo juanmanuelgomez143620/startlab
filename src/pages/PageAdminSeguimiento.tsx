@@ -184,6 +184,24 @@ export default function PageAdminSeguimiento() {
     setSaving(false)
   }
 
+  async function eliminarProyecto(p: ProyectoSeguimiento) {
+    const nombre = p.nombre_emprendimiento || 'Sin nombre'
+    const alumno = p.perfiles?.nombre_completo || 'el alumno'
+    if (!confirm(`¿Eliminar definitivamente el proyecto "${nombre}" de ${alumno}?\n\nSe borran el plan, el equipo y los comentarios. No se puede deshacer.`)) return
+
+    const { data, error } = await supabase.from('proyectos').delete().eq('id', p.id).select('id')
+    if (error || !data?.length) {
+      alert('No se pudo eliminar el proyecto' + (error ? ': ' + error.message : ' (sin permisos sobre esta clase).'))
+      return
+    }
+    // Si el docente lo tenía abierto, se cierra
+    if (useStore.getState().proyectoId === p.id) {
+      useStore.getState().setProyectoId(null)
+      setProyectoContexto(null)
+    }
+    fetchProyectos()
+  }
+
   function abrirCalificador(p: ProyectoSeguimiento) {
     setSelectedProy(p)
     setNota(p.nota?.toString() || '')
@@ -272,6 +290,13 @@ export default function PageAdminSeguimiento() {
                             style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: '0.75rem', cursor: 'pointer', color: 'var(--text)' }}
                           >
                             {p.nota ? 'Editar Nota' : 'Calificar'}
+                          </button>
+                          <button
+                            onClick={() => eliminarProyecto(p)}
+                            title="Eliminar proyecto"
+                            style={{ background: 'transparent', border: '1px solid var(--error)', borderRadius: 6, padding: '4px 10px', fontSize: '0.75rem', cursor: 'pointer', color: 'var(--error)' }}
+                          >
+                            🗑️ Eliminar
                           </button>
                         </>
                       ) : (

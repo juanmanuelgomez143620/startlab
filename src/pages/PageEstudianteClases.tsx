@@ -157,7 +157,7 @@ export default function PageEstudianteClases() {
               <h4 style={{ fontWeight: 700, marginBottom: 8 }}>👥 Unirme a un equipo</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--text2)', marginBottom: 16 }}>Pide el Código de Grupo a tus compañeros.</p>
               <div style={{ display: 'flex', gap: 10 }}>
-                <input type="text" placeholder="Código" value={codigoGrupo} onChange={e => setCodigoGrupo(e.target.value.toUpperCase())} style={{ flex: 1 }} />
+                <input type="text" placeholder="Código" value={codigoGrupo} onChange={e => setCodigoGrupo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} style={{ flex: 1 }} />
                 <Btn onClick={handleJoinProject} disabled={joiningProject}>Unirme</Btn>
               </div>
             </div>
@@ -181,7 +181,7 @@ export default function PageEstudianteClases() {
         <div style={{ marginBottom: 32 }}><Card>
           <CardTitle icon="🔑">Unirse a clase</CardTitle>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase())} placeholder="Código Clase" style={{ flex: 1 }} />
+            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder="Código Clase" style={{ flex: 1 }} />
             <Btn onClick={handleJoinClass}>Unirse</Btn>
             <Btn variant="ghost" onClick={() => setUnirseOpen(false)}>Cancelar</Btn>
           </div>

@@ -118,6 +118,12 @@ CREATE INDEX IF NOT EXISTS idx_coment_proyecto ON public.comentarios_secciones(p
 -- 2. TRIGGERS DE MANTENIMIENTO
 -- ============================================================
 
+-- Normaliza códigos pegados desde WhatsApp ("*QJGN2H*", " qjgn-2h ", etc.)
+CREATE OR REPLACE FUNCTION public.normalizar_codigo(p TEXT)
+RETURNS TEXT LANGUAGE sql IMMUTABLE SET search_path = '' AS $$
+  SELECT NULLIF(upper(regexp_replace(COALESCE(p, ''), '[^A-Za-z0-9]', '', 'g')), '');
+$$;
+
 CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER LANGUAGE plpgsql SET search_path = '' AS $$
 BEGIN
@@ -157,7 +163,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 DECLARE
   v_rol    TEXT := COALESCE(NEW.raw_user_meta_data->>'rol', 'estudiante');
-  v_codigo TEXT := NULLIF(upper(trim(NEW.raw_user_meta_data->>'codigo_clase')), '');
+  v_codigo TEXT := public.normalizar_codigo(NEW.raw_user_meta_data->>'codigo_clase');
   v_clase  UUID;
 BEGIN
   IF v_rol NOT IN ('profesor', 'estudiante') THEN
@@ -270,14 +276,14 @@ $$;
 -- Validar código de clase (se usa antes del registro, sin sesión)
 CREATE OR REPLACE FUNCTION public.clase_id_por_codigo(p_codigo TEXT)
 RETURNS UUID LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
-  SELECT id FROM public.clases WHERE codigo = upper(trim(p_codigo)) AND activa LIMIT 1;
+  SELECT id FROM public.clases WHERE codigo = public.normalizar_codigo(p_codigo) AND activa LIMIT 1;
 $$;
 
 -- Un docente se suma como colaborador con el código docente
 CREATE OR REPLACE FUNCTION public.clase_por_codigo_docente(p_codigo TEXT)
 RETURNS TABLE (id UUID, profesor_id UUID) LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
   SELECT c.id, c.profesor_id FROM public.clases c
-  WHERE c.codigo_docente = upper(trim(p_codigo))
+  WHERE c.codigo_docente = public.normalizar_codigo(p_codigo)
     AND EXISTS (SELECT 1 FROM public.perfiles WHERE id = auth.uid() AND rol = 'profesor')
   LIMIT 1;
 $$;
@@ -286,7 +292,7 @@ $$;
 CREATE OR REPLACE FUNCTION public.proyecto_por_codigo_grupo(p_codigo TEXT)
 RETURNS TABLE (id UUID, clase_id UUID) LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
   SELECT p.id, p.clase_id FROM public.proyectos p
-  WHERE p.codigo_grupo = upper(trim(p_codigo))
+  WHERE p.codigo_grupo = public.normalizar_codigo(p_codigo)
     AND auth.uid() IS NOT NULL
   LIMIT 1;
 $$;
@@ -330,6 +336,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
 TO authenticated;
 
 REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.normalizar_codigo(TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION
   public.es_profesor_clase(UUID),
   public.mis_clases_como_profesor(),
@@ -488,7 +495,10 @@ CREATE POLICY proyectos_update ON public.proyectos
 DROP POLICY IF EXISTS proyectos_delete ON public.proyectos;
 CREATE POLICY proyectos_delete ON public.proyectos
   FOR DELETE TO authenticated
-  USING (usuario_id = (SELECT auth.uid()));  -- solo el líder
+  USING (
+    usuario_id = (SELECT auth.uid())                       -- el líder
+    OR clase_id IN (SELECT public.mis_clases_como_profesor())  -- o un docente de la clase
+  );
 
 -- ─── proyecto_participantes ─────────────────────────────────
 DROP POLICY IF EXISTS ppart_select ON public.proyecto_participantes;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { useStore } from '../store/useStore'
 import { calcCompleteness } from '../lib/calculos'
+import { useProject } from '../hooks/useProject'
 import { Card, CardTitle, CardSubtitle, Btn, toast } from './ui'
 import type { ComentarioSeccion } from '../types'
 
@@ -11,6 +12,7 @@ interface Props {
 
 export function FeedbackPanel({ section }: Props) {
   const { user, perfil, proyectoId, estado, setEstado } = useStore()
+  const { saveToCloud } = useProject()
   const [comentarios, setComentarios] = useState<ComentarioSeccion[]>([])
   const [nuevo, setNuevo] = useState('')
   const [loading, setLoading] = useState(false)
@@ -47,11 +49,27 @@ export function FeedbackPanel({ section }: Props) {
   }
 
   async function enviarComentario() {
-    if (!nuevo.trim() || !user || !proyectoId) return
+    if (!nuevo.trim()) return
+    if (!user) { toast('Iniciá sesión para dejar comentarios.', 'warn'); return }
     setLoading(true)
-    
+
+    // El alumno puede comentar antes de que el autoguardado haya creado el proyecto:
+    // lo guardamos primero para tener un proyecto_id.
+    let pid = proyectoId
+    if (!pid && !isDocente) {
+      await saveToCloud()
+      pid = useStore.getState().proyectoId
+    }
+    if (!pid) {
+      toast(isDocente
+        ? 'Abrí el plan de un alumno desde "Seguimiento" para dejarle comentarios.'
+        : 'No se pudo guardar tu proyecto en la nube. Revisá tu conexión e intentá de nuevo.', 'warn')
+      setLoading(false)
+      return
+    }
+
     const { error } = await supabase.from('comentarios_secciones').insert({
-      proyecto_id: proyectoId,
+      proyecto_id: pid,
       seccion: section,
       usuario_id: user.id,
       usuario_nombre: perfil?.nombre_completo || 'Usuario',
@@ -69,7 +87,8 @@ export function FeedbackPanel({ section }: Props) {
       }
     } else {
       setNuevo('')
-      fetchComentarios()
+      toast('Comentario enviado.', 'success')
+      if (pid === proyectoId) fetchComentarios() // si cambió, el useEffect recarga
     }
     setLoading(false)
   }
@@ -142,8 +161,13 @@ export function FeedbackPanel({ section }: Props) {
         )}
       </div>
 
+      {isDocente && !proyectoId ? (
+        <div style={{ color: 'var(--text3)', fontSize: '0.85rem', background: 'var(--bg2)', padding: 16, borderRadius: 12, border: '1px dashed var(--border)' }}>
+          Para dejar comentarios, abrí el plan de un alumno desde <b>Seguimiento de Alumnos</b> → <b>📂 Ver Plan</b>.
+        </div>
+      ) : (
       <div style={{ display: 'flex', gap: 10 }}>
-        <textarea 
+        <textarea
           value={nuevo}
           onChange={e => setNuevo(e.target.value)}
           placeholder="Escribí un comentario u observación..."
@@ -157,6 +181,7 @@ export function FeedbackPanel({ section }: Props) {
           Enviar 📤
         </Btn>
       </div>
+      )}
     </div>
   )
 }

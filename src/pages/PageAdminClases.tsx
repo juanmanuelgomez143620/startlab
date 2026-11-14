@@ -279,7 +279,7 @@ export default function PageAdminClases() {
           Pedile a otro docente el <b>código de docente</b> de su clase para co-administrarla: ver alumnos, calificar y dejar feedback.
         </p>
         <form onSubmit={unirseComoColaborador} style={{ display: 'flex', gap: 10 }}>
-          <input type="text" placeholder="Código de docente" value={codigoColaborar} onChange={e => setCodigoColaborar(e.target.value.toUpperCase())} style={{ flex: 1 }} />
+          <input type="text" placeholder="Código de docente" value={codigoColaborar} onChange={e => setCodigoColaborar(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} style={{ flex: 1 }} />
           <Btn variant="primary" type="submit" disabled={uniendo}>{uniendo ? 'Uniendo...' : 'Unirme'}</Btn>
         </form>
       </div>
