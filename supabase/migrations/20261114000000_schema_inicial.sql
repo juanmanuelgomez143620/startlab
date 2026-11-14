@@ -279,6 +279,12 @@ RETURNS UUID LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
   SELECT id FROM public.clases WHERE codigo = public.normalizar_codigo(p_codigo) AND activa LIMIT 1;
 $$;
 
+-- ¿Es un código docente? (para avisarle al alumno que se equivocó de código)
+CREATE OR REPLACE FUNCTION public.es_codigo_docente(p_codigo TEXT)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
+  SELECT EXISTS (SELECT 1 FROM public.clases WHERE codigo_docente = public.normalizar_codigo(p_codigo));
+$$;
+
 -- Un docente se suma como colaborador con el código docente
 CREATE OR REPLACE FUNCTION public.clase_por_codigo_docente(p_codigo TEXT)
 RETURNS TABLE (id UUID, profesor_id UUID) LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
@@ -349,6 +355,7 @@ GRANT EXECUTE ON FUNCTION
   public.companeros_disponibles(UUID)
 TO authenticated;
 GRANT EXECUTE ON FUNCTION public.clase_id_por_codigo(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION public.es_codigo_docente(TEXT) TO anon, authenticated;
 
 -- Las funciones de trigger no se llaman por RPC
 REVOKE EXECUTE ON FUNCTION

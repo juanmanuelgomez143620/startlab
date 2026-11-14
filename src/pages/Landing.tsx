@@ -86,7 +86,13 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
       if (modalRole === 'estudiante') {
         if (!codigo) { setError('Debes ingresar el código de clase proporcionado por tu docente.'); setLoading(false); return; }
         const { data: cl, error: clErr } = await supabase.rpc('clase_id_por_codigo', { p_codigo: codigo.trim().toUpperCase() })
-        if (clErr || !cl) { setError('El código de clase no es válido.'); setLoading(false); return; }
+        if (clErr || !cl) {
+          const { data: esDocente } = await supabase.rpc('es_codigo_docente', { p_codigo: codigo })
+          setError(esDocente
+            ? 'Ese es el código DOCENTE de la clase (sirve para sumar profesores). Pedile a tu docente el "Código para tus alumnos".'
+            : 'El código de clase no es válido. Revisalo con tu docente.')
+          setLoading(false); return;
+        }
       }
 
       await signUp(email, pass, nombre, modalRole, codigo || undefined)
@@ -266,9 +272,9 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
                 </div>
                 {modalRole === 'estudiante' && (
                   <div style={{ marginBottom: 14 }}>
-                    <label style={{ fontSize: '0.8rem', color: 'var(--text2)', fontWeight: 500, display: 'block', marginBottom: 6 }}>Código de clase (opcional)</label>
+                    <label style={{ fontSize: '0.8rem', color: 'var(--text2)', fontWeight: 500, display: 'block', marginBottom: 6 }}>Código de clase para alumnos</label>
                     <input type="text" value={codigo} onChange={e => setCodigo(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder="Ej: ABC123" />
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text3)', marginTop: 4 }}>Tu docente te compartirá este código</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text3)', marginTop: 4 }}>Te lo comparte tu docente (6 letras/números, ej: QJGN2H)</div>
                   </div>
                 )}
                 <div style={{ marginBottom: 20 }}>

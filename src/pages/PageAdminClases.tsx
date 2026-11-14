@@ -329,7 +329,7 @@ export default function PageAdminClases() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        const msg = `Hola! 👋 Sumate al proyecto de *${c.escuela}* en *EmprendePlan*.\n📚 Materia: ${c.materia}\n🔑 Código: *${c.codigo}*\n🔗 ${window.location.origin}`;
+                        const msg = `Hola! 👋 Sumate al proyecto de *${c.escuela}* en *EmprendePlan*.\n📚 Materia: ${c.materia}\n🔑 Código de clase para alumnos: ${c.codigo}\n🔗 ${window.location.origin} → Ingresar como Alumno → Registrarse`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                       }}
                       style={{ background: 'var(--success)', border: 'none', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -358,7 +358,17 @@ export default function PageAdminClases() {
                 {/* Body de Tarjeta */}
                 <div style={{ padding: '20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ fontSize: '0.85rem', color: 'var(--text)', fontWeight: 600, marginBottom: 4 }}>{c.escuela}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text3)', marginBottom: 12 }}>Código de alumnos: <strong style={{color: 'var(--text2)'}}>{c.codigo}</strong></div>
+                  <div style={{ marginBottom: 12, padding: '10px 12px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.35)', borderRadius: 8 }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>🎓 Código para tus alumnos</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                      <strong style={{ fontSize: '1.4rem', letterSpacing: '3px', color: 'var(--success)', fontFamily: 'monospace' }}>{c.codigo}</strong>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); navigator.clipboard?.writeText(c.codigo).then(() => toast('Código de alumnos copiado', 'success')) }}
+                        style={{ background: 'var(--bg3)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 4, padding: '3px 8px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}
+                      >Copiar</button>
+                    </div>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text3)' }}>Es el que ingresan al registrarse como alumno.</div>
+                  </div>
 
                   {/* Docentes de la clase */}
                   <div style={{ marginBottom: 12, padding: 10, background: 'rgba(124,106,247,0.04)', borderRadius: 8, border: '1px solid var(--border)' }}>
@@ -378,11 +388,11 @@ export default function PageAdminClases() {
                       </div>
                     ))}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, paddingTop: 6, borderTop: '1px solid var(--border)' }}>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--text3)' }}>Código docente: <strong style={{ color: 'var(--text2)' }}>{c.codigo_docente}</strong></span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text3)' }}>👨‍🏫 Código docente <i>(solo para profesores)</i>: <strong style={{ color: 'var(--text2)' }}>{c.codigo_docente}</strong></span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          const msg = `Hola! 👋 Te invito a co-administrar la clase de *${c.materia}* (${c.escuela}) en *EmprendePlan*.\n🔑 Código de docente: *${c.codigo_docente}*\n🔗 ${window.location.origin}`;
+                          const msg = `Hola! 👋 Te invito a co-administrar la clase de *${c.materia}* (${c.escuela}) en *EmprendePlan*.\n🔑 Código de docente: ${c.codigo_docente}\n🔗 ${window.location.origin} → Ingresar como Docente → "Unirme a una clase como colaborador"`;
                           window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
                         }}
                         style={{ background: 'var(--bg3)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 4, padding: '3px 8px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}

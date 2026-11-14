@@ -73,7 +73,13 @@ export default function PageEstudianteClases() {
     if (!clean || !user) return
     try {
       const { data: claseId } = await supabase.rpc('clase_id_por_codigo', { p_codigo: clean })
-      if (!claseId) { toast('Código de clase no encontrado', 'error'); return }
+      if (!claseId) {
+        const { data: esDocente } = await supabase.rpc('es_codigo_docente', { p_codigo: clean })
+        toast(esDocente
+          ? 'Ese es el código DOCENTE. Pedile a tu docente el código para alumnos.'
+          : 'Código de clase no encontrado', 'error')
+        return
+      }
 
       const { error } = await supabase.from('clase_estudiantes').upsert({ clase_id: claseId, estudiante_id: user.id }, { onConflict: 'clase_id,estudiante_id' })
       if (error) throw error
