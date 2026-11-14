@@ -50,19 +50,18 @@ export function useAuth() {
     if (rol === 'estudiante') {
       if (!codigoClase) throw new Error('Debes ingresar un código de clase para registrarte como alumno.')
       
-      const { data: clase, error: errClase } = await supabase
-        .from('clases')
-        .select('id')
-        .eq('codigo', codigoClase.toUpperCase())
-        .maybeSingle()
-      
-      if (!clase || errClase) throw new Error('El código de clase ingresado no es válido o la clase ya no existe.')
-      claseId = clase.id
+      const { data: idClase, error: errClase } = await supabase
+        .rpc('clase_id_por_codigo', { p_codigo: codigoClase.trim().toUpperCase() })
+
+      if (!idClase || errClase) throw new Error('El código de clase ingresado no es válido o la clase ya no existe.')
+      claseId = idClase as string
     }
 
     const { data, error } = await supabase.auth.signUp({
       email, password,
-      options: { data: { nombre_completo: nombre, rol } },
+      // codigo_clase viaja en la metadata: el trigger handle_new_user crea el perfil
+      // e inscribe al alumno aunque Supabase exija confirmar el email (sin sesión aún).
+      options: { data: { nombre_completo: nombre, rol, codigo_clase: codigoClase?.toUpperCase() || null } },
     })
     
     if (error) throw error

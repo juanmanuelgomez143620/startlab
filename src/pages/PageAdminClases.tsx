@@ -114,7 +114,7 @@ export default function PageAdminClases() {
     if (!clean || !user) return
     setUniendo(true)
     try {
-      const { data: cl, error: errCl } = await supabase.from('clases').select('id, profesor_id').eq('codigo_docente', clean).maybeSingle()
+      const { data: cl, error: errCl } = await supabase.rpc('clase_por_codigo_docente', { p_codigo: clean }).maybeSingle<{ id: string; profesor_id: string }>()
       if (errCl || !cl) { toast('Código de docente no encontrado', 'error'); return }
       if (cl.profesor_id === user.id) { toast('Ya sos el titular de esa clase', 'warn'); return }
 

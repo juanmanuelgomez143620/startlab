@@ -43,16 +43,19 @@ VITE_AUTHOR_PHOTO=https://url-foto-autor.jpg
 
 ## Deploy en Vercel
 
-1. Subir el proyecto a GitHub
-2. Importar en [vercel.com](https://vercel.com)
-3. Agregar las variables de entorno en el panel de Vercel
-4. Deploy automático
+1. Importar el repo `startlab` en [vercel.com](https://vercel.com) (Framework: **Vite**, se detecta solo; build `npm run build`, output `dist`)
+2. En *Settings → Environment Variables* cargar `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (Production + Preview)
+3. Deploy (cada push a `main` redeploya automáticamente)
 
-> **Importante:** En Supabase → Authentication → URL Configuration, agregar tu URL de Vercel en Site URL y Redirect URLs.
+> **Importante:** En Supabase → Authentication → URL Configuration, poner la URL de Vercel en **Site URL** y agregar `https://<tu-app>.vercel.app/**` en **Redirect URLs** (si no, los mails de confirmación apuntan a localhost).
 
 ## Supabase
 
-Ejecutar el SQL del archivo `_legacy/supabase-emprendeplan.sql` en el SQL Editor de Supabase para crear todas las tablas.
+El esquema completo (tablas, RLS, funciones RPC, triggers y realtime) está en
+`supabase/migrations/20261114000000_schema_inicial.sql`. Para un proyecto nuevo, ejecutarlo
+completo en el SQL Editor. Ya está aplicado en el proyecto `emprendeplan` (`kjstvkculajcljsbvlnn`).
+
+Los archivos de `_legacy/` son históricos y **no** deben ejecutarse.
 
 ## Estructura del proyecto
 

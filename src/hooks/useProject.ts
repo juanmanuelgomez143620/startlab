@@ -146,10 +146,8 @@ export function useProject() {
     if (!user) return { ok: false, msg: 'No hay usuario' }
     try {
       const { data: proj, error } = await supabase
-        .from('proyectos')
-        .select('id, clase_id')
-        .eq('codigo_grupo', code.toUpperCase())
-        .maybeSingle()
+        .rpc('proyecto_por_codigo_grupo', { p_codigo: code.trim().toUpperCase() })
+        .maybeSingle<{ id: string; clase_id: string | null }>()
       
       if (error || !proj) return { ok: false, msg: 'Código de grupo no encontrado' }
 

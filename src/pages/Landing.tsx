@@ -69,7 +69,7 @@ export default function Landing({ onEnter }: { onEnter: () => void }) {
       // Validar código si es estudiante antes de registrar
       if (modalRole === 'estudiante') {
         if (!codigo) { setError('Debes ingresar el código de clase proporcionado por tu docente.'); setLoading(false); return; }
-        const { data: cl, error: clErr } = await supabase.from('clases').select('id').eq('codigo', codigo.toUpperCase()).maybeSingle()
+        const { data: cl, error: clErr } = await supabase.rpc('clase_id_por_codigo', { p_codigo: codigo.trim().toUpperCase() })
         if (clErr || !cl) { setError('El código de clase no es válido.'); setLoading(false); return; }
       }
 
