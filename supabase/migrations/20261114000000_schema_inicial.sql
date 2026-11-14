@@ -384,7 +384,10 @@ DROP POLICY IF EXISTS clases_select ON public.clases;
 CREATE POLICY clases_select ON public.clases
   FOR SELECT TO authenticated
   USING (
-    id IN (SELECT public.mis_clases_como_profesor())
+    -- condición directa: las funciones STABLE no ven la fila recién insertada,
+    -- y sin esto falla el insert().select() que hace la app al crear una clase
+    profesor_id = (SELECT auth.uid())
+    OR id IN (SELECT public.mis_clases_como_profesor())
     OR id IN (SELECT public.mis_clases_como_estudiante())
   );
 
