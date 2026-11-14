@@ -14,10 +14,10 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointEleme
 
 const CHART_OPTS = {
   responsive: true,
-  plugins: { legend: { labels: { color: '#9090b0', font: { size: 11 } } } },
+  plugins: { legend: { labels: { color: '#555873', font: { size: 11 } } } },
   scales: {
-    x: { ticks: { color: '#9090b0' }, grid: { color: 'rgba(100,100,120,0.15)' } },
-    y: { ticks: { color: '#9090b0', callback: (v: number | string) => '$' + fmt(Number(v)) }, grid: { color: 'rgba(100,100,120,0.15)' } },
+    x: { ticks: { color: '#555873' }, grid: { color: 'rgba(100,100,120,0.15)' } },
+    y: { ticks: { color: '#555873', callback: (v: number | string) => '$' + fmt(Number(v)) }, grid: { color: 'rgba(100,100,120,0.15)' } },
   },
 }
 

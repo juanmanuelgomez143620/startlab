@@ -6,19 +6,10 @@ interface BtnProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md'
 }
 export function Btn({ variant = 'secondary', size = 'md', className = '', children, ...props }: BtnProps) {
-  const base = 'inline-flex items-center gap-1.5 rounded-lg font-medium transition-all cursor-pointer border-none'
-  const sizes = { sm: 'px-3 py-1.5 text-xs', md: 'px-4 py-2 text-sm' }
-  const variants = {
-    primary: 'bg-accent text-white hover:bg-[#6a58e8] hover:shadow-lg hover:shadow-accent/30 hover:-translate-y-px',
-    secondary: 'bg-[var(--bg3)] text-[var(--text)] border border-[var(--border)] hover:bg-[var(--border)]',
-    success: 'bg-success/10 text-[var(--success)] border border-success/20 hover:bg-success/20',
-    danger: 'bg-error/10 text-[var(--error)] border border-error/20 hover:bg-error/20',
-    ghost: 'bg-transparent text-[var(--text2)] hover:text-[var(--text)] hover:bg-[var(--bg3)]',
-  }
+  // Estilos en index.css (.btn) — el proyecto no usa Tailwind
   return (
     <button
-      className={`${base} ${sizes[size]} ${variants[variant]} ${className}`}
-      style={{ fontFamily: 'var(--font-body)' }}
+      className={`btn btn-${variant} btn-${size} ${className}`}
       {...props}
     >
       {children}

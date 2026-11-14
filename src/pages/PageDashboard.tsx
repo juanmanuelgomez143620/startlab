@@ -94,10 +94,10 @@ export default function PageDashboard() {
           ],
         }} options={{
           responsive: true,
-          plugins: { legend: { labels: { color: '#9090b0' } } },
+          plugins: { legend: { labels: { color: '#555873' } } },
           scales: {
-            x: { ticks: { color: '#9090b0' }, grid: { color: 'rgba(42,42,56,0.8)' } },
-            y: { ticks: { color: '#9090b0', callback: (v) => '$' + fmt(Number(v)) }, grid: { color: 'rgba(42,42,56,0.8)' } },
+            x: { ticks: { color: '#555873' }, grid: { color: 'rgba(100,100,120,0.15)' } },
+            y: { ticks: { color: '#555873', callback: (v) => '$' + fmt(Number(v)) }, grid: { color: 'rgba(100,100,120,0.15)' } },
           },
         }} />
       </div>

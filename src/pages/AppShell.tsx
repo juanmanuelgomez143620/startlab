@@ -243,7 +243,7 @@ export default function AppShell() {
         {/* TOPBAR */}
         <div className="topbar" style={{
           position: 'sticky', top: 0, zIndex: 50,
-          background: 'rgba(15,15,19,0.9)', backdropFilter: 'blur(12px)',
+          background: 'rgba(255,255,255,0.88)', backdropFilter: 'blur(12px)',
           borderBottom: '1px solid var(--border)',
           padding: '12px 32px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'nowrap',
         }}>

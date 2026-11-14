@@ -1,24 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 
 :root {
-  --bg: #0f0f13;
-  --bg2: #16161e;
-  --bg3: #1e1e2a;
-  --card: #1a1a24;
-  --border: #2a2a38;
-  --accent: #7c6af7;
-  --accent2: #f7a26a;
-  --accent3: #6af7b8;
-  --accent4: #f76a8a;
-  --text: #e8e8f0;
-  --text2: #9090b0;
-  --text3: #5a5a7a;
-  --success: #4ade80;
-  --warn: #facc15;
-  --error: #f87171;
+  /* Modo claro */
+  color-scheme: light;
+  --bg: #f5f6fa;
+  --bg2: #eef0f6;
+  --bg3: #ffffff;
+  --card: #ffffff;
+  --border: #dde0ea;
+  --accent: #6a58e8;
+  --accent2: #e07b34;
+  --accent3: #12b886;
+  --accent4: #e5486b;
+  --text: #1c1d2b;
+  --text2: #555873;
+  --text3: #8a8da6;
+  --success: #16a34a;
+  --warn: #ca8a04;
+  --error: #dc2626;
   --radius: 12px;
   --radius-lg: 20px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow: 0 4px 18px rgba(30,32,60,0.08);
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 }
@@ -63,6 +65,51 @@ input.filled, select.filled, textarea.filled {
 }
 select { cursor: pointer; }
 textarea { resize: vertical; min-height: 90px; }
+
+/* ── Botones (componente Btn) ─────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border-radius: 8px; border: 1px solid transparent;
+  font-family: var(--font-body); font-weight: 600; line-height: 1.2;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+.btn-md { padding: 9px 16px; font-size: 0.875rem; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #5946d6; box-shadow: 0 6px 16px rgba(106,88,232,0.28); transform: translateY(-1px); }
+.btn-secondary { background: var(--card); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover:not(:disabled) { background: var(--bg2); border-color: #c9cddc; }
+.btn-success { background: rgba(22,163,74,0.1); color: var(--success); border-color: rgba(22,163,74,0.25); }
+.btn-success:hover:not(:disabled) { background: rgba(22,163,74,0.18); }
+.btn-danger { background: rgba(220,38,38,0.08); color: var(--error); border-color: rgba(220,38,38,0.25); }
+.btn-danger:hover:not(:disabled) { background: rgba(220,38,38,0.15); }
+.btn-ghost { background: transparent; color: var(--text2); }
+.btn-ghost:hover:not(:disabled) { background: var(--bg2); color: var(--text); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(106,88,232,0.25); }
+
+/* ── Utilidades mínimas (las que usan los componentes; no hay Tailwind) ── */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.text-center { text-align: center; }
+.gap-1 { gap: 4px; }
+.gap-1\.5 { gap: 6px; }
+.gap-2 { gap: 8px; }
+.mb-1 { margin-bottom: 4px; }
+.mb-5 { margin-bottom: 20px; }
+.p-2\.5 { padding: 10px; }
+.p-4 { padding: 16px; }
+.px-2\.5 { padding-left: 10px; padding-right: 10px; }
+.py-0\.5 { padding-top: 2px; padding-bottom: 2px; }
+.rounded-full { border-radius: 9999px; }
+.rounded-xl { border-radius: 12px; }
+.rounded-r-lg { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+.hover\:shadow-xl:hover { box-shadow: 0 12px 28px rgba(30,32,60,0.14); }
+.group-hover\:opacity-100 { transition: opacity 0.15s; }
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
 
 /* Print */
 @media print {
